@@ -130,7 +130,7 @@ export const exportToPng = async (elementId, filename = 'whatswrap-card') => {
     ctx.font = '600 24px "Inter", sans-serif';
     ctx.fillStyle = '#64748b'; // var(--on-surface-mute)
     ctx.textAlign = 'center';
-    ctx.fillText('whatsupwrap.netlify.app', outW / 2, outH - MARGIN * DPR + 10);
+    ctx.fillText('whatswrapadv.netlify.app', outW / 2, outH - MARGIN * DPR + 10);
     // ── Download ──────────────────────────────────────────────────────────────
     const link = document.createElement('a');
     link.download = `${filename}.png`;
@@ -319,7 +319,7 @@ export const exportToPdf = async (elementId, filename = 'whatswrap-dashboard') =
     
     for (let i = 1; i <= pageCount; i++) {
       pdf.setPage(i);
-      pdf.text('whatsupwrap.netlify.app', pdfWidth / 2, pdfHeight - 20, { align: 'center' });
+      pdf.text('whatswrapadv.netlify.app', pdfWidth / 2, pdfHeight - 20, { align: 'center' });
     }
 
     pdf.save(`${filename}.pdf`);

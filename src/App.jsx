@@ -46,6 +46,36 @@ export default function App() {
 
   const handleReset = () => setChatData(null);
 
+  const [isCensored, setIsCensored] = React.useState(false);
+
+  const displayData = React.useMemo(() => {
+    if (!chatData || !isCensored) return chatData;
+    const [name1, name2] = chatData.chatters;
+    
+    const deepCensor = (obj) => {
+      if (typeof obj === 'string') {
+        if (obj === name1) return "User 1";
+        if (obj === name2) return "User 2";
+        return obj;
+      }
+      if (Array.isArray(obj)) {
+        return obj.map(deepCensor);
+      }
+      if (obj !== null && typeof obj === 'object') {
+        const newObj = {};
+        for (const key in obj) {
+          let newKey = key;
+          if (key === name1) newKey = "User 1";
+          else if (key === name2) newKey = "User 2";
+          newObj[newKey] = deepCensor(obj[key]);
+        }
+        return newObj;
+      }
+      return obj;
+    };
+    return deepCensor(chatData);
+  }, [chatData, isCensored]);
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Ambient background glows */}
@@ -204,101 +234,103 @@ export default function App() {
         <div className="app-shell">
           <SideNav
             onReset={handleReset}
-            chatters={chatData.chatters}
-            streak={chatData.maxStreak}
+            chatters={displayData.chatters}
+            streak={displayData.maxStreak}
           />
 
           <main className="app-main" style={{ position: 'relative', zIndex: 1 }}>
             <DashboardHeader
-              chatters={chatData.chatters}
+              chatters={displayData.chatters}
               onReset={handleReset}
+              isCensored={isCensored}
+              setIsCensored={setIsCensored}
             />
 
             {/* All sections rendered one below each other */}
             <div id="dashboard-root" style={{ padding: '0 32px 64px', maxWidth: 1100, margin: '0 auto', width: '100%' }}>
 
               <section id="overview" className="dashboard-section" style={{ paddingTop: 16 }}>
-                <MetricGrid data={chatData} />
+                <MetricGrid data={displayData} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="heatmap" className="dashboard-section">
-                <ChatHeatmap data={chatData} />
+                <ChatHeatmap data={displayData} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="clouds" className="dashboard-section">
-                <Clouds data={chatData} />
+                <Clouds data={displayData} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="first-message" className="dashboard-section">
-                <FirstMessage data={chatData} />
+                <FirstMessage data={displayData} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="capsule" className="dashboard-section">
-                <TimeCapsule capsules={chatData.monthlyCapsules} />
+                <TimeCapsule capsules={displayData.monthlyCapsules} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="awards" className="dashboard-section">
-                <UniverseAwards awards={chatData.awards} />
+                <UniverseAwards awards={displayData.awards} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="response" className="dashboard-section">
-                <ResponseTime data={chatData} />
+                <ResponseTime data={displayData} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="silent" className="dashboard-section">
-                <SilentTreatment data={chatData} />
+                <SilentTreatment data={displayData} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="media-diet" className="dashboard-section">
-                <MediaDiet data={chatData} />
+                <MediaDiet data={displayData} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="typology" className="dashboard-section">
-                <TexterTypology data={chatData} />
+                <TexterTypology data={displayData} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="personalities" className="dashboard-section">
-                <Personalities personalities={chatData.personalities} />
+                <Personalities personalities={displayData.personalities} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="longest" className="dashboard-section">
-                <LongestMessage data={chatData} />
+                <LongestMessage data={displayData} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="compatibility" className="dashboard-section">
-                <Compatibility compatibility={chatData.compatibility} chatters={chatData.chatters} />
+                <Compatibility compatibility={displayData.compatibility} chatters={displayData.chatters} />
               </section>
 
               <div style={{ height: 56 }} />
 
               <section id="milestones" className="dashboard-section">
-                <Milestones milestones={chatData.milestones} />
+                <Milestones milestones={displayData.milestones} />
                 <div style={{ marginTop: 32 }}>
-                  <ChartSection data={chatData} />
+                  <ChartSection data={displayData} />
                 </div>
               </section>
 

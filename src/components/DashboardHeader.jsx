@@ -1,8 +1,8 @@
 import React from 'react';
-import { MessageCircle, Sparkles, RefreshCw, Download } from 'lucide-react';
+import { MessageCircle, Sparkles, RefreshCw, Download, Eye, EyeOff } from 'lucide-react';
 import { exportToPng, exportToPdf } from '../utils/exporter';
 
-export default function DashboardHeader({ chatters, onReset }) {
+export default function DashboardHeader({ chatters, onReset, isCensored, setIsCensored }) {
   const [user1, user2] = chatters;
 
   return (
@@ -43,7 +43,42 @@ export default function DashboardHeader({ chatters, onReset }) {
         </h1>
 
         {/* Right: Actions */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', width: 'auto', gap: 8, flexShrink: 0 }}>
+          <button
+            onClick={() => setIsCensored(!isCensored)}
+            className="export-btn"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '6px 12px',
+              borderRadius: 8,
+              background: isCensored ? 'var(--primary-glow)' : 'var(--bg-overlay)',
+              border: `1px solid ${isCensored ? 'var(--primary)' : 'var(--card-border)'}`,
+              color: isCensored ? 'var(--primary)' : 'var(--on-surface-dim)',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              whiteSpace: 'nowrap',
+            }}
+            onMouseEnter={e => {
+              if (!isCensored) {
+                e.currentTarget.style.borderColor = 'var(--primary)';
+                e.currentTarget.style.color = 'var(--primary)';
+                e.currentTarget.style.background = 'var(--primary-glow)';
+              }
+            }}
+            onMouseLeave={e => {
+              if (!isCensored) {
+                e.currentTarget.style.borderColor = 'var(--card-border)';
+                e.currentTarget.style.color = 'var(--on-surface-dim)';
+                e.currentTarget.style.background = 'var(--bg-overlay)';
+              }
+            }}
+          >
+            {isCensored ? <EyeOff size={12} /> : <Eye size={12} />}
+            <span>{isCensored ? 'Names Censored' : 'Censor Names'}</span>
+          </button>
+
           <button
             onClick={onReset}
             style={{
